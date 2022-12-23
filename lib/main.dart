@@ -1,12 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // await
   runApp(const MyApp());
 }
 
@@ -57,30 +56,55 @@ class _HomePageState extends State<HomePage> {
         title: const Text("Register"),
       ),
       body: Center(
-        child: Column(
-          children: [
-            TextField(
-              controller: _userName,
-              decoration: const InputDecoration(
-                hintText: "Email",
-              ),
-            ),
-            TextField(
-              controller: _pwd,
-              decoration: const InputDecoration(
-                hintText: "Password",
-              ),
-              // autofillHints: "Email",
-            ),
-            TextButton(
-              child: const Text(
-                "Register",
-              ),
-              onPressed: () {
-                print("Register");
-              },
-            ),
-          ],
+        child: FutureBuilder(
+          future: Firebase.initializeApp(
+            options: DefaultFirebaseOptions.currentPlatform,
+          ),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.done:
+                return Column(
+                  children: [
+                    TextField(
+                      controller: _userName,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        hintText: "Email",
+                      ),
+                    ),
+                    TextField(
+                      controller: _pwd,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        hintText: "Password",
+                      ),
+                      // autofillHints: "Email",
+                    ),
+                    TextButton(
+                      child: const Text(
+                        "Register",
+                      ),
+                      onPressed: () async {
+                        final email = _userName.text;
+                        final password = _pwd.text;
+                        print("Register: $email and $password");
+                        var user = await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                                email: email, password: password);
+
+                        print(user);
+                      },
+                    ),
+                  ],
+                );
+              default:
+                return const Text("Loading");
+            }
+          },
         ),
       ),
     );
