@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/router.dart';
@@ -26,9 +27,9 @@ class MyApp extends StatelessWidget {
       home: const HomePage(),
       routes: {
         LoginRoute: (context) => const LoginView(),
-        NotesRoute: (context) => const MyNotesView(),
         RegisterRoute: (context) => const RegisterView(),
-        EmailViewRoute: (context) => const EmailVerifiedView()
+        EmailViewRoute: (context) => const EmailVerifiedView(),
+        NotesRoute: (context) => const MyNotesView(),
       },
     );
   }
@@ -46,22 +47,21 @@ class HomePage extends StatelessWidget {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            // final user = FirebaseAuth.instance.currentUser;
-            // print(user);
+            final user = FirebaseAuth.instance.currentUser;
+            print("user $user");
 
-            // // if (user != null) {
-            // final emailVerified = user?.emailVerified ?? false;
-            // if (emailVerified) {
-            //   print("You are verified User");
-            //   return const Text("done");
-            //   // return const MyNotesView();
-            // } else {
-            //   print("You are not Verified");
-            //   return const EmailVerifiedView();
-            //   // Navigator.of(context).pushNamed(EmailViewRoute);
-            //   // return const EmailVerifiedView();
-            // }
-            return const LoginView();
+            if (user != null) {
+              final emailVerified = user.emailVerified;
+              if (emailVerified) {
+                print("You are verified User");
+                return const MyNotesView();
+              } else {
+                return const EmailVerifiedView();
+              }
+            } else {
+              return const LoginView();
+            }
+            return const Text("Done");
 
           default:
             return const CircularProgressIndicator();

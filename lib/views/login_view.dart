@@ -52,7 +52,6 @@ class _LoginViewState extends State<LoginView> {
             decoration: const InputDecoration(
               hintText: "Password",
             ),
-            // autofillHints: "Email",
           ),
           TextButton(
             child: const Text(
