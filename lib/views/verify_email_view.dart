@@ -19,6 +19,8 @@ class _EmailVerifiedViewState extends State<EmailVerifiedView> {
       ),
       body: Column(
         children: [
+          const Text(
+              "We already send you email verification, if you haven't received, Please click Verify"),
           const Text("Please Verify Your Email Address"),
           // TextField(
           //   controller: _emailController,
@@ -31,20 +33,34 @@ class _EmailVerifiedViewState extends State<EmailVerifiedView> {
           //   // autofillHints: "Email",
           // ),
           ElevatedButton(
-              onPressed: () async {
-                // final user = FirebaseAuth.instance.currentUser;
-                var user = FirebaseAuth.instance.currentUser;
+            onPressed: () async {
+              // final user = FirebaseAuth.instance.currentUser;
+              var user = FirebaseAuth.instance.currentUser;
 
-                await user!.sendEmailVerification();
+              await user!.sendEmailVerification();
 
-                print(FirebaseAuth.instance.currentUser);
+              print(FirebaseAuth.instance.currentUser);
 
-                if (FirebaseAuth.instance.currentUser!.emailVerified == true) {
-                  Navigator.of(context)
-                      .pushNamedAndRemoveUntil(NotesRoute, (route) => false);
-                }
-              },
-              child: const Text("VERIFY EMAIL"))
+              if (FirebaseAuth.instance.currentUser!.emailVerified == true) {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil(NotesRoute, (route) => false);
+              }
+            },
+            child: const Text(
+              "VERIFY EMAIL",
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              if (!mounted) return;
+              Navigator.of(context)
+                  .pushNamedAndRemoveUntil(RegisterRoute, (route) => false);
+            },
+            child: const Text(
+              "Restart",
+            ),
+          ),
         ],
       ),
     );
