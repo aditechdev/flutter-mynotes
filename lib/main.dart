@@ -1,7 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:mynotes/constants/router.dart';
 import 'package:mynotes/firebase_options.dart';
+import 'package:mynotes/views/login_view.dart';
+import 'package:mynotes/views/notes_view.dart';
+import 'package:mynotes/views/register_view.dart';
+import 'package:mynotes/views/verify_email_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +24,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const HomePage(),
+      routes: {
+        LoginRoute: (context) => const LoginView(),
+        NotesRoute: (context) => const MyNotesView(),
+        RegisterRoute: (context) => const RegisterView(),
+        EmailViewRoute: (context) => const EmailVerifiedView()
+      },
     );
   }
 }
@@ -29,32 +39,34 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("HomePage"),
+    return FutureBuilder(
+      future: Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
       ),
-      body: Center(
-        child: FutureBuilder(
-          future: Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform,
-          ),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                final user = FirebaseAuth.instance.currentUser;
-                final emailVerified = user?.emailVerified ?? false;
-                if (emailVerified) {
-                  print("You are verified user");
-                } else {
-                  print("you need to verify");
-                }
-                return const Text("Done");
-              default:
-                return const Text("Loading");
-            }
-          },
-        ),
-      ),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            // final user = FirebaseAuth.instance.currentUser;
+            // print(user);
+
+            // // if (user != null) {
+            // final emailVerified = user?.emailVerified ?? false;
+            // if (emailVerified) {
+            //   print("You are verified User");
+            //   return const Text("done");
+            //   // return const MyNotesView();
+            // } else {
+            //   print("You are not Verified");
+            //   return const EmailVerifiedView();
+            //   // Navigator.of(context).pushNamed(EmailViewRoute);
+            //   // return const EmailVerifiedView();
+            // }
+            return const LoginView();
+
+          default:
+            return const CircularProgressIndicator();
+        }
+      },
     );
   }
 }
