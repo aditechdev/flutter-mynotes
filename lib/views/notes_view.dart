@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/router.dart';
-import 'dart:developer' as devTool show log;
+import 'dart:developer' as devtool show log;
 
 enum MenuAction { logout }
 
@@ -22,7 +22,7 @@ class _MyNotesViewState extends State<MyNotesView> {
           PopupMenuButton<MenuAction>(onSelected: (value) async {
             switch (value) {
               case MenuAction.logout:
-                devTool.log(value.toString());
+                devtool.log(value.toString());
                 var shouldLogout = await showLogOutDialogue(context);
                 if (shouldLogout) {
                   await FirebaseAuth.instance.signOut();
@@ -53,8 +53,8 @@ class _MyNotesViewState extends State<MyNotesView> {
                   //   Navigator.of(context).pop();
                   // }
 
-                  // Helpul Link 
-                  // 
+                  // Helpul Link
+                  //
                   // https://dart-lang.github.io/linter/lints/use_build_context_synchronously.html
                   //
                   //https://stackoverflow.com/questions/68871880/do-not-use-buildcontexts-across-async-gaps

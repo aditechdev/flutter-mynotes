@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/router.dart';
+import 'dart:developer' as devtool show log;
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -60,26 +61,32 @@ class _LoginViewState extends State<LoginView> {
             onPressed: () async {
               final email = _userName.text;
               final password = _pwd.text;
-              print("Register: $email and $password");
+              // print("Register: $email and $password");
+              devtool.log(email.toString());
 
               try {
                 var user = await FirebaseAuth.instance
                     .signInWithEmailAndPassword(
                         email: email, password: password);
-
-                print(user);
+                devtool.log(user.toString());
+                if (!mounted) return;
+                if (user.user!.emailVerified == true) {
+                  Navigator.of(context)
+                      .pushNamedAndRemoveUntil(NotesRoute, (route) => false);
+                } else {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      EmailViewRoute, (route) => false);
+                }
               } on FirebaseAuthException catch (e) {
-                print(e.code);
                 if (e.code == "user-not-found") {
-                  print("User not found");
+                  devtool.log("User not found");
                 } else if (e.code == "wrong-password") {
-                  print("Something else happer");
-                  print(e.code);
+                  devtool.log("Something else happer");
+                  devtool.log(e.code.toString());
                 }
               } catch (e) {
-                print("something went wrong");
-                print(e);
-                print(e.runtimeType);
+                devtool.log("something went wrong");
+                devtool.log(e.toString());
               }
             },
           ),
