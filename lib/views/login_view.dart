@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/router.dart';
+import 'package:mynotes/services/auth/auth_exceptions.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
 
 import 'package:mynotes/utilities/show_error_dialogue.dart';
 
@@ -64,27 +65,23 @@ class _LoginViewState extends State<LoginView> {
               final password = _pwd.text;
 
               try {
-                var user = await FirebaseAuth.instance
-                    .signInWithEmailAndPassword(
-                        email: email, password: password);
+                await AuthService.firebase()
+                    .logIn(email: email, password: password);
+                final user = AuthService.firebase().currentUser;
                 if (!mounted) return;
-                if (user.user!.emailVerified == true) {
+                if (user?.isEmailVerified == true) {
                   Navigator.of(context)
                       .pushNamedAndRemoveUntil(NotesRoute, (route) => false);
                 } else {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                       EmailViewRoute, (route) => false);
                 }
-              } on FirebaseAuthException catch (e) {
-                if (e.code == "user-not-found") {
-                  await showErrorDialogue(context, "User not found");
-                } else if (e.code == "wrong-password") {
-                  await showErrorDialogue(context, "Wrong password");
-                } else {
-                  await showErrorDialogue(context, "ERROR: ${e.code}");
-                }
-              } catch (e) {
-                await showErrorDialogue(context, "ERROR: $e");
+              } on UserNotFoundAuthExceptions {
+                await showErrorDialogue(context, "User not found");
+              } on WrongPasswordAuthExceptions {
+                await showErrorDialogue(context, "Wrong password");
+              } on GenericAuthExceptions {
+                await showErrorDialogue(context, "ERROR: Authentication Error");
               }
             },
           ),

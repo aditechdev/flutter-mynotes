@@ -1,9 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/router.dart';
-import 'dart:developer' as devtool show log;
 
 import 'package:mynotes/enums/menu_action.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
 
 class MyNotesView extends StatefulWidget {
   const MyNotesView({super.key});
@@ -22,10 +21,9 @@ class _MyNotesViewState extends State<MyNotesView> {
           PopupMenuButton<MenuAction>(onSelected: (value) async {
             switch (value) {
               case MenuAction.logout:
-                devtool.log(value.toString());
                 var shouldLogout = await showLogOutDialogue(context);
                 if (shouldLogout) {
-                  await FirebaseAuth.instance.signOut();
+                  await AuthService.firebase().logOut();
 
                   // DON'T use BuildContext across asynchronous gaps.
                   // Storing BuildContext for later usage can easily lead to difficult to diagnose crashes. Asynchronous gaps are implicitly storing BuildContext and are some of the easiest to overlook when writing code.

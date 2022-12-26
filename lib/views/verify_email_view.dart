@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/router.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
 
 class EmailVerifiedView extends StatefulWidget {
   const EmailVerifiedView({super.key});
@@ -34,17 +34,18 @@ class _EmailVerifiedViewState extends State<EmailVerifiedView> {
           // ),
           ElevatedButton(
             onPressed: () async {
-              // final user = FirebaseAuth.instance.currentUser;
-              var user = FirebaseAuth.instance.currentUser;
+              await AuthService.firebase().sendEmailVerification();
 
-              await user!.sendEmailVerification();
+              // var user = FirebaseAuth.instance.currentUser;
 
-              print(FirebaseAuth.instance.currentUser);
+              // await user!.sendEmailVerification();
 
-              if (FirebaseAuth.instance.currentUser!.emailVerified == true) {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(NotesRoute, (route) => false);
-              }
+              // print(FirebaseAuth.instance.currentUser);
+
+              // if (FirebaseAuth.instance.currentUser!.emailVerified == true) {
+              //   Navigator.of(context)
+              //       .pushNamedAndRemoveUntil(NotesRoute, (route) => false);
+              // }
             },
             child: const Text(
               "VERIFY EMAIL",
@@ -52,7 +53,7 @@ class _EmailVerifiedViewState extends State<EmailVerifiedView> {
           ),
           TextButton(
             onPressed: () async {
-              await FirebaseAuth.instance.signOut();
+              await AuthService.firebase().logOut();
               if (!mounted) return;
               Navigator.of(context)
                   .pushNamedAndRemoveUntil(RegisterRoute, (route) => false);
