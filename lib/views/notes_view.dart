@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mynotes/constants/router.dart';
 import 'dart:developer' as devtool show log;
 
-enum MenuAction { logout }
+import 'package:mynotes/enums/menu_action.dart';
 
 class MyNotesView extends StatefulWidget {
   const MyNotesView({super.key});
