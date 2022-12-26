@@ -9,19 +9,21 @@ import 'package:mynotes/views/verify_email_view.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // await
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData(
-      primarySwatch: Colors.blue,
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const HomePage(),
+      routes: {
+        LoginRoute: (context) => const LoginView(),
+        RegisterRoute: (context) => const RegisterView(),
+        EmailViewRoute: (context) => const EmailVerifiedView(),
+        NotesRoute: (context) => const MyNotesView(),
+      },
     ),
-    home: const HomePage(),
-    routes: {
-      LoginRoute: (context) => const LoginView(),
-      RegisterRoute: (context) => const RegisterView(),
-      EmailViewRoute: (context) => const EmailVerifiedView(),
-      NotesRoute: (context) => const MyNotesView(),
-    },
-  ));
+  );
 }
 
 class HomePage extends StatelessWidget {
